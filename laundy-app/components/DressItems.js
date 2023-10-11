@@ -25,7 +25,7 @@ const DressItems = ({ item }) => {
           <Text
             style={{
               width: 80,
-              fontSize: 17,
+              fontSize: 15,
               fontWeight: "500",
               marginBottom: 7,
             }}

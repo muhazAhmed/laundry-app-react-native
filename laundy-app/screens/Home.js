@@ -16,8 +16,10 @@ import { FontAwesome } from "@expo/vector-icons";
 import Carousel from "../components/Carousel";
 import Services from "../components/Services";
 import DressItems from "../components/DressItems";
+import { useSelector } from "react-redux";
 
 const Home = () => {
+  const cart = useSelector((state) => state.cart.cart);
   const [displayCurrentLocation, setDisplayCurrentLocation] = useState(
     "Loading location..."
   );
@@ -171,7 +173,7 @@ const Home = () => {
   ];
 
   return (
-    <ScrollView style={{ backgroundColor: "#F0F0F0", flex: 1, marginTop: 40 }}>
+    <ScrollView style={{ backgroundColor: "#F0F0F0", flex: 1 }}>
       <View style={{ flexDirection: "row", alignItems: "center", padding: 15 }}>
         <MaterialIcons name="location-on" size={30} color="#FF033E" />
         <View>
