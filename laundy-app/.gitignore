@@ -2,6 +2,9 @@
 
 # dependencies
 node_modules/
+%ProgramData%/
+Testing.js
+OtherPage.js
 
 # Expo
 .expo/

@@ -1,12 +1,16 @@
 import { StatusBar } from "react-native";
-import Home from "./screens/Home";
 import { Provider } from "react-redux";
 import store from "./store";
+import Testing from "./Testing";
+import OtherPage from "./OtherPage";
+import StackNavigator from "./StackNavigator";
 
 export default function App() {
   return (
     <Provider store={store}>
-      <Home />
+      <StackNavigator />
+      {/* <Testing/>
+      <OtherPage/> */}
       <StatusBar style="auto" />
     </Provider>
   );

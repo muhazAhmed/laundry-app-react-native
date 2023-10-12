@@ -16,10 +16,16 @@ import { FontAwesome } from "@expo/vector-icons";
 import Carousel from "../components/Carousel";
 import Services from "../components/Services";
 import DressItems from "../components/DressItems";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getProducts } from "../ProductReducer";
+import { useNavigation } from "@react-navigation/native";
 
 const Home = () => {
   const cart = useSelector((state) => state.cart.cart);
+  const totalPrice = cart
+    .map((item) => item.quantity * item.price)
+    .reduce((curr, prev) => curr + prev, 0);
+  const navigation = useNavigation();
   const [displayCurrentLocation, setDisplayCurrentLocation] = useState(
     "Loading location..."
   );
@@ -120,6 +126,16 @@ const Home = () => {
     getCurrentLocation();
   }, []);
 
+  const product = useSelector((state) => state.product.product);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (product.length > 0) return;
+    const fetchProduct = () => {
+      products.map((item) => dispatch(getProducts(item)));
+    };
+    fetchProduct();
+  }, []);
+
   const products = [
     {
       id: "0",
@@ -140,7 +156,7 @@ const Home = () => {
       image: "https://cdn-icons-png.flaticon.com/128/9609/9609161.png",
       name: "dresses",
       quantity: 0,
-      price: 10,
+      price: 20,
     },
     {
       id: "13",
@@ -154,14 +170,14 @@ const Home = () => {
       image: "https://cdn-icons-png.flaticon.com/128/9431/9431166.png",
       name: "Sweater",
       quantity: 0,
-      price: 10,
+      price: 15,
     },
     {
       id: "15",
       image: "https://cdn-icons-png.flaticon.com/128/3345/3345397.png",
       name: "shorts",
       quantity: 0,
-      price: 10,
+      price: 7,
     },
     {
       id: "16",
@@ -173,46 +189,100 @@ const Home = () => {
   ];
 
   return (
-    <ScrollView style={{ backgroundColor: "#F0F0F0", flex: 1 }}>
-      <View style={{ flexDirection: "row", alignItems: "center", padding: 15 }}>
-        <MaterialIcons name="location-on" size={30} color="#FF033E" />
-        <View>
-          <Text style={{ fontSize: 18, fontWeight: "600" }}>Home</Text>
-          <Text>{displayCurrentLocation}</Text>
+    <>
+      <ScrollView style={{ backgroundColor: "#F0F0F0", flex: 1 }}>
+        <View
+          style={{ flexDirection: "row", alignItems: "center", padding: 15 }}
+        >
+          <MaterialIcons name="location-on" size={30} color="#FF033E" />
+          <View>
+            <Text style={{ fontSize: 18, fontWeight: "600" }}>Home</Text>
+            <Text>{displayCurrentLocation}</Text>
+          </View>
+          <Pressable style={{ marginLeft: "auto", marginRight: 7 }}>
+            <Image
+              style={{ width: 40, height: 40, borderRadius: 20 }}
+              source={{
+                uri: "https://w7.pngwing.com/pngs/613/636/png-transparent-computer-icons-user-profile-male-avatar-avatar-heroes-logo-black-thumbnail.png",
+              }}
+            />
+          </Pressable>
         </View>
-        <Pressable style={{ marginLeft: "auto", marginRight: 7 }}>
-          <Image
-            style={{ width: 40, height: 40, borderRadius: 20 }}
-            source={{
-              uri: "https://w7.pngwing.com/pngs/613/636/png-transparent-computer-icons-user-profile-male-avatar-avatar-heroes-logo-black-thumbnail.png",
-            }}
-          />
+        <View
+          style={{
+            padding: 10,
+            margin: 10,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            borderWidth: 1,
+            borderColor: "#C0C0C0",
+            borderRadius: 15,
+          }}
+        >
+          <TextInput placeholder="Search Items" />
+          <FontAwesome name="search" size={24} color="#FF033E" />
+        </View>
+
+        <Carousel />
+
+        <Services />
+
+        {product.map((item, index) => (
+          <DressItems item={item} key={index} />
+        ))}
+      </ScrollView>
+
+      {totalPrice === 0 ? null : (
+        <Pressable
+          style={{
+            backgroundColor: "#088F8F",
+            padding: 15,
+            marginBottom: 40,
+            margin: 15,
+            borderRadius: 15,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <View>
+            <Text
+              style={{
+                fontSize: 17,
+                fontWeight: "600",
+                color: "white",
+              }}
+            >
+              {cart.length} items | ${totalPrice}
+            </Text>
+            <Text
+              style={{
+                fontSize: 10,
+                fontWeight: "500",
+                color: "#fff",
+                marginVertical: 6,
+              }}
+            >
+              Extra charges might apply
+            </Text>
+          </View>
+          <Pressable 
+          // onPress={() => navigation.navigate("PickUp")}
+          >
+            <Text
+              style={{
+                fontSize: 17,
+                fontWeight: "600",
+                color: "#fff",
+              }}
+            >
+              Proceed To Cart
+            </Text>
+          </Pressable>
         </Pressable>
-      </View>
-      <View
-        style={{
-          padding: 10,
-          margin: 10,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          borderWidth: 1,
-          borderColor: "#C0C0C0",
-          borderRadius: 15,
-        }}
-      >
-        <TextInput placeholder="Search Items" />
-        <FontAwesome name="search" size={24} color="#FF033E" />
-      </View>
-
-      <Carousel />
-
-      <Services />
-
-      {products.map((item, index) => (
-        <DressItems item={item} key={index} />
-      ))}
-    </ScrollView>
+      )}
+    </>
   );
 };
 
